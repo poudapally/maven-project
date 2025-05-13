@@ -6,9 +6,18 @@ pipeline {
     stages {
         stage("build") {
             steps {
-                sh 'mvn clean install'
+                sh 'mvn clean deploy'
+            }
+        }
+        stage('SonarQube analysis') {
+            environment {
+                scannerHome = tool 'Jenkins-sonarQube scanner'
+            }
+            steps {
+                withSonarQubeEnv('Jenkins-sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
             }
         }
     }
 }
-
